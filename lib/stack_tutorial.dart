@@ -30,19 +30,22 @@ class StackTutorial extends StatelessWidget {
             child: Container(
               width: 100,
               height: 100,
-              decoration: const BoxDecoration(
+              decoration:  const BoxDecoration(
                   color: Colors.tealAccent,
-                  gradient: RadialGradient(colors: [
-                    Colors.red,
-                    Colors.yellow,
-                    Colors.purple,
-                  ]),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.red,
+                      Colors.yellow,
+                    ],
+                    end: Alignment.centerLeft,
+                    begin: Alignment.centerRight,
+                  ),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey,
-                      spreadRadius: 5,
-                      blurRadius: 2,
+                      spreadRadius: 10,
+                      blurRadius: 4,
                     ),
                   ]),
             ),
