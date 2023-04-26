@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_source/stack_tutorial.dart';
+import 'package:flutter_ui_source/clipper_tutorial.dart';
 
 main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
-      home: const StackTutorial(),
+      home: const ClipperTutorial(),
     );
   }
 }
