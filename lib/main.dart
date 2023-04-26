@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'basic_sliver_app_bar.dart';
+import 'nested_scroll_view.dart';
 
 main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
-      home: const BasicSliverAppBar(),
+      home: const NestedScrollViewExample(),
     );
   }
 }

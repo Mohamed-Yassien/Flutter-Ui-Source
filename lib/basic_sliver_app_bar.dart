@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui_source/sliver_grid.dart';
 
 class BasicSliverAppBar extends StatelessWidget {
   const BasicSliverAppBar({Key? key}) : super(key: key);
@@ -41,26 +42,7 @@ class BasicSliverAppBar extends StatelessWidget {
               collapseMode: CollapseMode.pin,
             ),
           ),
-          SliverToBoxAdapter(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(20),
-              primary: false,
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return Image.network(
-                  'https://images.pexels.com/photos/16106135/pexels-photo-16106135.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                  height: 100,
-                  fit: BoxFit.cover,
-                );
-              },
-              itemCount: 20,
-            ),
-          ),
+          const SliverGridWidget(),
         ],
       ),
     );
