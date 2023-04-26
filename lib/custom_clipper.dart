@@ -44,8 +44,8 @@ class MyCustomClipper2 extends CustomClipper<Path> {
     var h = size.height;
 
     Path path = Path();
-   // path.lineTo(w, h);
-    path.quadraticBezierTo(w * .5, h , w , 0);
+    // path.lineTo(w, h);
+    path.quadraticBezierTo(w * .5, h, w, 0);
 
     path.close();
 
