@@ -38,7 +38,9 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
               ),
             ),
           ),
-          const SizedBox(width: 10,),
+          const SizedBox(
+            width: 10,
+          ),
         ],
       ),
       body: Padding(
