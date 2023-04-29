@@ -23,8 +23,26 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: const Text(
+              'SKIP',
+              style: TextStyle(
+                color: Colors.teal,
+                fontWeight: FontWeight.w900,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          const SizedBox(width: 10,),
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 35),
         child: Column(
           children: [
             Expanded(
