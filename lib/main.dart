@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui_source/app_router.dart';
+import 'package:flutter_ui_source/onboard/on_board_screen.dart';
 
-import 'nested_scroll_view.dart';
 
 main() {
   runApp(const MyApp());
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
-      home: const NestedScrollViewExample(),
+      onGenerateRoute: AppRouter.onGenerateRoute,
+      home:  const OnBoardScreen(),
     );
   }
 }
