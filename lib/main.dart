@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_source/app_router.dart';
 
-import 'curved_navigation/curved_navigation_screen.dart';
+import 'google_maps/map_screen.dart';
 
 
 main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home:  const CurvedNavigationScreen(),
+      home: const MapScreen(),
     );
   }
 }
