@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_source/app_router.dart';
+import 'package:flutter_ui_source/onboard/on_board_screen.dart';
 
-import 'google_maps/map_screen.dart';
 
 
 main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const MapScreen(),
+      home: const OnBoardScreen(),
     );
   }
 }

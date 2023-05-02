@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_source/onboard/board_model.dart';
-import 'package:flutter_ui_source/onboard/dot_indicator.dart';
+import 'package:flutter_ui_source/onboard/dot_indicator_2.dart';
 import 'package:flutter_ui_source/onboard/on_board_item.dart';
 
 class OnBoardScreen extends StatefulWidget {
@@ -65,48 +65,49 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 },
               ),
             ),
-            pageIndex != dummyData.length - 1
-                ? Row(
-                    //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ...List.generate(
-                        dummyData.length,
-                        (index) => DotIndicator(
-                          isActive: index == pageIndex,
-                        ),
-                      ),
-                      const Spacer(),
-                      ElevatedButton(
-                        onPressed: () {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.slowMiddle,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: Colors.teal,
-                            padding: const EdgeInsets.all(10)),
-                        child: const Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  )
-                : ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(horizontal: 30)),
-                    child: const Text(
-                      'Start',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+            //pageIndex != dummyData.length - 1 ?
+            Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ...List.generate(
+                  dummyData.length,
+                  (index) => DotIndicator2(
+                    isActive: index == pageIndex,
+                    index: index,
                   ),
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    _pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.slowMiddle,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                      backgroundColor: Colors.teal,
+                      padding: const EdgeInsets.all(10)),
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            )
+            // : ElevatedButton(
+            //     onPressed: () {},
+            //     style: ElevatedButton.styleFrom(
+            //         backgroundColor: Colors.teal,
+            //         padding: const EdgeInsets.symmetric(horizontal: 30)),
+            //     child: const Text(
+            //       'Start',
+            //       style: TextStyle(
+            //         color: Colors.white,
+            //         fontWeight: FontWeight.bold,
+            //       ),
+            //     ),
+            //   ),
           ],
         ),
       ),
