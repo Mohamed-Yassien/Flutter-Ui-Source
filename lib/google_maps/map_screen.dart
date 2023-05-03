@@ -34,26 +34,26 @@ class _MapScreenState extends State<MapScreen> {
 
   Set<Polyline> polyLine = HashSet<Polyline>();
 
-  bool isInArea = false;
+  // bool isInArea = false;
 
-  checkIfPointInArea(LatLng point) {
-    List<mp.LatLng> points = polygonCords
-        .map(
-          (e) => mp.LatLng(
-            e.latitude,
-            e.longitude,
-          ),
-        )
-        .toList();
-
-    setState(() {
-      isInArea = mp.PolygonUtil.containsLocation(
-        mp.LatLng(point.latitude, point.longitude),
-        points,
-        false,
-      );
-    });
-  }
+  // checkIfPointInArea(LatLng point) {
+  //   List<mp.LatLng> points = polygonCords
+  //       .map(
+  //         (e) => mp.LatLng(
+  //           e.latitude,
+  //           e.longitude,
+  //         ),
+  //       )
+  //       .toList();
+  //
+  //   setState(() {
+  //     isInArea = mp.PolygonUtil.containsLocation(
+  //       mp.LatLng(point.latitude, point.longitude),
+  //       points,
+  //       false,
+  //     );
+  //   });
+  // }
 
   Completer<GoogleMapController> mapController = Completer();
 
@@ -125,17 +125,18 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ),
       );
-      checkIfPointInArea(
-        LatLng(
-          newLoc.latitude!,
-          newLoc.longitude!,
-        ),
-      );
+      // checkIfPointInArea(
+      //   LatLng(
+      //     newLoc.latitude!,
+      //     newLoc.longitude!,
+      //   ),
+      // );
       setState(() {});
     });
   }
 
-  //double circleRadius = 2306.2180880037217;
+  bool isInCircle = true;
+  double circleRadius = 2000;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
@@ -154,19 +155,24 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  double getCircleRadius() => mp.SphericalUtil.computeDistanceBetween(
-        mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-        mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
-      ).toDouble();
+  // double getCircleRadius() => mp.SphericalUtil.computeDistanceBetween(
+  //       mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+  //       mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
+  //     ).toDouble();
 
   checkIfCircle() {
     var result = mp.SphericalUtil.computeDistanceBetween(
       mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
       mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
     );
-    if (result.toDouble() > getCircleRadius()) {
+    if (result.toDouble() > circleRadius) {
+      debugPrint('yes greater');
       setState(() {
-        isInArea = false;
+        isInCircle = false;
+      });
+    } else {
+      setState(() {
+        isInCircle = true;
       });
     }
     debugPrint('distance is $result');
@@ -184,14 +190,14 @@ class _MapScreenState extends State<MapScreen> {
     setIcons();
     getCurrentLocation().then((value) {
       setUpPolyline();
-      checkIfPointInArea(
-        LatLng(
-          currentLocation!.latitude!,
-          currentLocation!.longitude!,
-        ),
-      );
+      // checkIfPointInArea(
+      //   LatLng(
+      //     currentLocation!.latitude!,
+      //     currentLocation!.longitude!,
+      //   ),
+      // );
       checkIfCircle();
-      getCircleRadius();
+      // getCircleRadius();
     });
     super.initState();
   }
@@ -210,16 +216,11 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 GoogleMap(
                   onTap: (LatLng tappedLoc) {
-                    setState(() {
-                      // currentLocation = LocationData.fromMap({
-                      //   'latitude': tappedLoc.latitude,
-                      //   'longitude': tappedLoc.longitude,
-                      // });
-                      sourceLocation = tappedLoc;
-                      setUpPolyline();
-                      getCircleRadius();
-                      // checkIfCircle();
-                    });
+                    sourceLocation = tappedLoc;
+                    setUpPolyline();
+                    //  getCircleRadius();
+                    checkIfCircle();
+                    setState(() {});
                     debugPrint('tab lat is ${tappedLoc.latitude}');
                     debugPrint('tab long is ${tappedLoc.longitude}');
                   },
@@ -248,7 +249,7 @@ class _MapScreenState extends State<MapScreen> {
                           currentLocation!.longitude!,
                         ),
                         onDrag: (LatLng po) {
-                          checkIfPointInArea(po);
+                          // checkIfPointInArea(po);
                         }),
                   },
                   circles: {
@@ -258,7 +259,7 @@ class _MapScreenState extends State<MapScreen> {
                         currentLocation!.latitude!,
                         currentLocation!.longitude!,
                       ),
-                      radius: getCircleRadius(),
+                      radius: circleRadius,
                       strokeWidth: 1,
                       fillColor: Colors.red.withOpacity(.4),
                       strokeColor: Colors.red,
@@ -286,7 +287,7 @@ class _MapScreenState extends State<MapScreen> {
                     mapController.complete(controller);
                   },
                 ),
-                if (!isInArea)
+                if (!isInCircle)
                   Positioned(
                     bottom: 0,
                     left: 0,

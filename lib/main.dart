@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_source/app_router.dart';
-
-import 'google_maps/map_screen.dart';
+import 'package:flutter_ui_source/google_maps/map_screen.dart';
 
 main() {
   runApp(const MyApp());

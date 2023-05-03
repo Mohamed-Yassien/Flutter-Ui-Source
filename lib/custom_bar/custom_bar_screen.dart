@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ui_source/custom_bar/custom_button_with_gradient.dart';
 import 'package:flutter_ui_source/google_maps/constant/app_constant.dart';
 
 class CustomBarScreen extends StatefulWidget {
@@ -43,10 +44,10 @@ class _CustomBarScreenState extends State<CustomBarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text('Custom Bar'),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   title: const Text('Custom Bar'),
+      // ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
           bottomAppBarTheme: const BottomAppBarTheme(
@@ -55,6 +56,7 @@ class _CustomBarScreenState extends State<CustomBarScreen> {
           ),
         ),
         child: BottomNavigationBar(
+          selectedFontSize: 10,
           items: items(currentIndex),
           currentIndex: currentIndex,
           onTap: (index) {
@@ -62,11 +64,11 @@ class _CustomBarScreenState extends State<CustomBarScreen> {
               currentIndex = index;
             });
           },
-         // useLegacyColorScheme: true,
+          // useLegacyColorScheme: true,
           //enableFeedback: false,
-         // backgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           //elevation: 8,
-          iconSize: 20,
+          // iconSize: 30,
           selectedIconTheme: const IconThemeData(
             size: 16.67,
             color: Colors.white,
@@ -75,6 +77,19 @@ class _CustomBarScreenState extends State<CustomBarScreen> {
             size: 16.67,
             color: Colors.grey,
           ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 100.0, left: 25, right: 25),
+        child: Column(
+          children: [
+            CustomButtonWithGradient(
+              gradient: AppConstant.linearGradient,
+              onPressed: () {},
+              radius: 25,
+              child: const Text('Download'),
+            ),
+          ],
         ),
       ),
     );
