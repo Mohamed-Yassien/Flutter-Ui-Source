@@ -33,6 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   ];
 
   Set<Polyline> polyLine = HashSet<Polyline>();
+  Set<Marker> markers = HashSet<Marker>();
 
   // bool isInArea = false;
 
@@ -88,6 +89,13 @@ class _MapScreenState extends State<MapScreen> {
   LocationData? currentLocation;
 
   Future<void> getCurrentLocation() async {
+    markers.add(
+      Marker(
+        markerId: const MarkerId('source'),
+        position: sourceLocation,
+        icon: sourceIcon,
+      ),
+    );
     Location location = Location();
 
     bool serviceEnabled;
@@ -110,6 +118,14 @@ class _MapScreenState extends State<MapScreen> {
     }
 
     currentLocation = await location.getLocation();
+    markers.add(
+      Marker(
+        markerId: const MarkerId('current m'),
+        position:
+            LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+        icon: currentIcon,
+      ),
+    );
     setState(() {});
     GoogleMapController googleMapController = await mapController.future;
     location.onLocationChanged.listen((newLoc) {
@@ -123,6 +139,14 @@ class _MapScreenState extends State<MapScreen> {
               newLoc.longitude!,
             ),
           ),
+        ),
+      );
+      markers.removeWhere((m) => m.markerId.value == 'current m');
+      markers.add(
+        Marker(
+          markerId: const MarkerId('current m'),
+          position: LatLng(newLoc.latitude!, newLoc.longitude!),
+          icon: currentIcon,
         ),
       );
       // checkIfPointInArea(
@@ -141,7 +165,7 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
-  setIcons() {
+  Future<void> setIcons() async {
     // BitmapDescriptor.fromAssetImage(
     //         ImageConfiguration.empty, 'assets/images/loc.png')
     //     .then(
@@ -188,6 +212,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     setIcons();
+
     getCurrentLocation().then((value) {
       setUpPolyline();
       // checkIfPointInArea(
@@ -215,8 +240,20 @@ class _MapScreenState extends State<MapScreen> {
           : Stack(
               children: [
                 GoogleMap(
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
                   onTap: (LatLng tappedLoc) {
+                    markers.removeWhere(
+                        (element) => element.markerId.value == 'source');
+
                     sourceLocation = tappedLoc;
+                    markers.add(
+                      Marker(
+                        markerId: const MarkerId('source'),
+                        position: tappedLoc,
+                        icon: sourceIcon,
+                      ),
+                    );
                     setUpPolyline();
                     //  getCircleRadius();
                     checkIfCircle();
@@ -231,27 +268,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     zoom: 13.2,
                   ),
-                  markers: {
-                    Marker(
-                      markerId: const MarkerId(
-                        'source',
-                      ),
-                      position: sourceLocation,
-                      icon: sourceIcon,
-                    ),
-                    Marker(
-                        markerId: const MarkerId(
-                          'current',
-                        ),
-                        icon: currentIcon,
-                        position: LatLng(
-                          currentLocation!.latitude!,
-                          currentLocation!.longitude!,
-                        ),
-                        onDrag: (LatLng po) {
-                          // checkIfPointInArea(po);
-                        }),
-                  },
+                  markers: markers,
                   circles: {
                     Circle(
                       circleId: const CircleId('current'),
