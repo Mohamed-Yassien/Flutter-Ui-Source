@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:collection';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -16,7 +18,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final sourceLocation = const LatLng(31.0519265, 31.4044526);
+  LatLng sourceLocation = const LatLng(31.041901490334578, 31.399718038737774);
 
 //  final destinationLocation = const LatLng(31.0162202, 31.3761024);
 
@@ -29,6 +31,8 @@ class _MapScreenState extends State<MapScreen> {
     LatLng(31.0263399, 31.392298),
     LatLng(31.0414531, 31.3416397),
   ];
+
+  Set<Polyline> polyLine = HashSet<Polyline>();
 
   bool isInArea = false;
 
@@ -57,6 +61,8 @@ class _MapScreenState extends State<MapScreen> {
 
   setUpPolyline() async {
     //await getCurrentLocation();
+    polyLine.clear();
+    points.clear();
     PolylinePoints polylinePoints = PolylinePoints();
     final result = await polylinePoints.getRouteBetweenCoordinates(
       AppConstant.mapApiKey,
@@ -67,6 +73,14 @@ class _MapScreenState extends State<MapScreen> {
       for (var element in result.points) {
         points.add(LatLng(element.latitude, element.longitude));
       }
+      polyLine.add(
+        Polyline(
+          polylineId: PolylineId('${Random().nextInt(1000000)}'),
+          points: points,
+          color: Colors.red,
+          width: 5,
+        ),
+      );
       setState(() {});
     }
   }
@@ -121,6 +135,8 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  //double circleRadius = 2306.2180880037217;
+
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
@@ -138,10 +154,33 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
+  double getCircleRadius() => mp.SphericalUtil.computeDistanceBetween(
+        mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+        mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
+      ).toDouble();
+
+  checkIfCircle() {
+    var result = mp.SphericalUtil.computeDistanceBetween(
+      mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+      mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
+    );
+    if (result.toDouble() > getCircleRadius()) {
+      setState(() {
+        isInArea = false;
+      });
+    }
+    debugPrint('distance is $result');
+    // var res = mp.SphericalUtil.computeArea(
+    //   <mp.LatLng>[
+    //     mp.LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+    //     mp.LatLng(sourceLocation.latitude, sourceLocation.longitude),
+    //   ],
+    // );
+    // debugPrint('area is $res');
+  }
+
   @override
   void initState() {
-    //setUpPolyline();
-
     setIcons();
     getCurrentLocation().then((value) {
       setUpPolyline();
@@ -151,6 +190,8 @@ class _MapScreenState extends State<MapScreen> {
           currentLocation!.longitude!,
         ),
       );
+      checkIfCircle();
+      getCircleRadius();
     });
     super.initState();
   }
@@ -168,6 +209,20 @@ class _MapScreenState extends State<MapScreen> {
           : Stack(
               children: [
                 GoogleMap(
+                  onTap: (LatLng tappedLoc) {
+                    setState(() {
+                      // currentLocation = LocationData.fromMap({
+                      //   'latitude': tappedLoc.latitude,
+                      //   'longitude': tappedLoc.longitude,
+                      // });
+                      sourceLocation = tappedLoc;
+                      setUpPolyline();
+                      getCircleRadius();
+                      // checkIfCircle();
+                    });
+                    debugPrint('tab lat is ${tappedLoc.latitude}');
+                    debugPrint('tab long is ${tappedLoc.longitude}');
+                  },
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
                       currentLocation!.latitude!,
@@ -196,36 +251,37 @@ class _MapScreenState extends State<MapScreen> {
                           checkIfPointInArea(po);
                         }),
                   },
-                  // circles: {
-                  //   Circle(
-                  //     circleId: const CircleId('current'),
-                  //     center: LatLng(
-                  //       currentLocation!.latitude!,
-                  //       currentLocation!.longitude!,
-                  //     ),
-                  //     radius: 1500,
-                  //     strokeWidth: 1,
-                  //     fillColor: Colors.red.withOpacity(.4),
-                  //     strokeColor: Colors.red,
-                  //   )
-                  // },
-                  polylines: {
-                    Polyline(
-                      polylineId: const PolylineId('pol'),
-                      points: points,
-                      color: Colors.red,
-                      width: 5,
-                    ),
-                  },
-                  polygons: {
-                    Polygon(
-                      polygonId: const PolygonId('polygon'),
-                      points: polygonCords,
+                  circles: {
+                    Circle(
+                      circleId: const CircleId('current'),
+                      center: LatLng(
+                        currentLocation!.latitude!,
+                        currentLocation!.longitude!,
+                      ),
+                      radius: getCircleRadius(),
                       strokeWidth: 1,
+                      fillColor: Colors.red.withOpacity(.4),
                       strokeColor: Colors.red,
-                      fillColor: Colors.red.withOpacity(.3),
-                    ),
+                    )
                   },
+                  polylines: polyLine,
+                  // polylines: {
+                  //   Polyline(
+                  //     polylineId: const PolylineId('pol'),
+                  //     points: points,
+                  //     color: Colors.red,
+                  //     width: 5,
+                  //   ),
+                  // },
+                  // polygons: {
+                  //   Polygon(
+                  //     polygonId: const PolygonId('polygon'),
+                  //     points: polygonCords,
+                  //     strokeWidth: 1,
+                  //     strokeColor: Colors.red,
+                  //     fillColor: Colors.red.withOpacity(.3),
+                  //   ),
+                  // },
                   onMapCreated: (controller) {
                     mapController.complete(controller);
                   },
