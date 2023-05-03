@@ -6,6 +6,8 @@ import 'package:flutter_ui_source/google_maps/constant/app_constant.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+import 'package:maps_toolkit/maps_toolkit.dart' as mp;
+
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
 
@@ -15,14 +17,39 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final sourceLocation = const LatLng(31.0519265, 31.4044526);
-  final destinationLocation = const LatLng(31.0162202, 31.3761024);
+
+//  final destinationLocation = const LatLng(31.0162202, 31.3761024);
 
   List<LatLng> polygonCords = const [
-    LatLng(31.0527518, 31.3880721),
-    LatLng(31.06021, 31.3832528),
+    //LatLng(31.0527518, 31.3880721),
+    // LatLng(31.06021, 31.3832528),
     LatLng(31.0473393, 31.3780107),
-    // LatLng(31.0527518, 31.3880721),
+    LatLng(31.0519265, 31.4044526),
+    LatLng(31.0210735, 31.4102592),
+    LatLng(31.0263399, 31.392298),
+    LatLng(31.0414531, 31.3416397),
   ];
+
+  bool isInArea = false;
+
+  checkIfPointInArea(LatLng point) {
+    List<mp.LatLng> points = polygonCords
+        .map(
+          (e) => mp.LatLng(
+            e.latitude,
+            e.longitude,
+          ),
+        )
+        .toList();
+
+    setState(() {
+      isInArea = mp.PolygonUtil.containsLocation(
+        mp.LatLng(point.latitude, point.longitude),
+        points,
+        false,
+      );
+    });
+  }
 
   Completer<GoogleMapController> mapController = Completer();
 
@@ -84,6 +111,12 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ),
       );
+      checkIfPointInArea(
+        LatLng(
+          newLoc.latitude!,
+          newLoc.longitude!,
+        ),
+      );
       setState(() {});
     });
   }
@@ -92,11 +125,11 @@ class _MapScreenState extends State<MapScreen> {
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
   setIcons() {
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration.empty, 'assets/images/loc.png')
-        .then(
-      (value) => currentIcon = value,
-    );
+    // BitmapDescriptor.fromAssetImage(
+    //         ImageConfiguration.empty, 'assets/images/loc.png')
+    //     .then(
+    //   (value) => currentIcon = value,
+    // );
     BitmapDescriptor.fromAssetImage(
             ImageConfiguration.empty, 'assets/images/loc.png')
         .then(
@@ -108,8 +141,17 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     //setUpPolyline();
+
     setIcons();
-    getCurrentLocation().then((value) => setUpPolyline());
+    getCurrentLocation().then((value) {
+      setUpPolyline();
+      checkIfPointInArea(
+        LatLng(
+          currentLocation!.latitude!,
+          currentLocation!.longitude!,
+        ),
+      );
+    });
     super.initState();
   }
 
@@ -123,73 +165,91 @@ class _MapScreenState extends State<MapScreen> {
           ? const Center(
               child: CircularProgressIndicator.adaptive(),
             )
-          : GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                  currentLocation!.latitude!,
-                  currentLocation!.longitude!,
-                ),
-                zoom: 13.2,
-              ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId(
-                    'source',
+          : Stack(
+              children: [
+                GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(
+                      currentLocation!.latitude!,
+                      currentLocation!.longitude!,
+                    ),
+                    zoom: 13.2,
                   ),
-                  position: sourceLocation,
-                  icon: sourceIcon,
+                  markers: {
+                    Marker(
+                      markerId: const MarkerId(
+                        'source',
+                      ),
+                      position: sourceLocation,
+                      icon: sourceIcon,
+                    ),
+                    Marker(
+                        markerId: const MarkerId(
+                          'current',
+                        ),
+                        icon: currentIcon,
+                        position: LatLng(
+                          currentLocation!.latitude!,
+                          currentLocation!.longitude!,
+                        ),
+                        onDrag: (LatLng po) {
+                          checkIfPointInArea(po);
+                        }),
+                  },
+                  // circles: {
+                  //   Circle(
+                  //     circleId: const CircleId('current'),
+                  //     center: LatLng(
+                  //       currentLocation!.latitude!,
+                  //       currentLocation!.longitude!,
+                  //     ),
+                  //     radius: 1500,
+                  //     strokeWidth: 1,
+                  //     fillColor: Colors.red.withOpacity(.4),
+                  //     strokeColor: Colors.red,
+                  //   )
+                  // },
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId('pol'),
+                      points: points,
+                      color: Colors.red,
+                      width: 5,
+                    ),
+                  },
+                  polygons: {
+                    Polygon(
+                      polygonId: const PolygonId('polygon'),
+                      points: polygonCords,
+                      strokeWidth: 1,
+                      strokeColor: Colors.red,
+                      fillColor: Colors.red.withOpacity(.3),
+                    ),
+                  },
+                  onMapCreated: (controller) {
+                    mapController.complete(controller);
+                  },
                 ),
-                // Marker(
-                //   markerId: const MarkerId(
-                //     'destination',
-                //   ),
-                //   position: destinationLocation,
-                //   icon: sourceIcon,
-                // ),
-                Marker(
-                  markerId: const MarkerId(
-                    'current',
+                if (!isInArea)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      color: Colors.red.withOpacity(.7),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(25),
+                      child: Text(
+                        'No Available Location',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                      ),
+                    ),
                   ),
-                  icon: currentIcon,
-                  position: LatLng(
-                    currentLocation!.latitude!,
-                    currentLocation!.longitude!,
-                  ),
-                ),
-              },
-              circles: {
-                Circle(
-                  circleId: const CircleId('current'),
-                  center: LatLng(
-                    currentLocation!.latitude!,
-                    currentLocation!.longitude!,
-                  ),
-                  radius: 1500,
-                  strokeWidth: 1,
-                  fillColor: Colors.red.withOpacity(.4),
-                  strokeColor: Colors.red,
-                )
-              },
-              polylines: {
-                Polyline(
-                  polylineId: const PolylineId('pol'),
-                  points: points,
-                  color: Colors.red,
-                  width: 5,
-                ),
-              },
-              polygons: {
-                Polygon(
-                  polygonId: const PolygonId('polygon'),
-                  points: polygonCords,
-                  strokeWidth: 1,
-                  strokeColor: Colors.red,
-                  fillColor: Colors.red.withOpacity(.4),
-                ),
-              },
-              onMapCreated: (controller) {
-                mapController.complete(controller);
-              },
+              ],
             ),
     );
   }
