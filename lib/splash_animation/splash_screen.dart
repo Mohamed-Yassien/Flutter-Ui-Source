@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_source/splash_animation/welcome_screen.dart';
 
 import 'jumping_dot.dart';
 
@@ -20,19 +19,19 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      const Duration(seconds: 4),
-      () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        ),
-      ),
-    );
+    // Future.delayed(
+    //   const Duration(seconds: 4),
+    //   () => Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => const WelcomeScreen(),
+    //     ),
+    //   ),
+    // );
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 10),
-    )..forward(from: 0);
+      duration: const Duration(seconds: 6),
+    )..forward();
     animation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: animationController!,
@@ -50,14 +49,47 @@ class _SplashScreenState extends State<SplashScreen>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            FadeTransition(
-              opacity: animation!,
-              child: const Text(
-                'Mandobk',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 40,
+            // FadeTransition(
+            //   opacity: animation!,
+            //   child: const Text(
+            //     'Mandobk',
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontWeight: FontWeight.w800,
+            //       fontSize: 40,
+            //     ),
+            //   ),
+            // ),
+            // ScaleTransition(
+            //   scale: animation!,
+            //   child: const Text(
+            //     'Mandobk',
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontWeight: FontWeight.w800,
+            //       fontSize: 40,
+            //     ),
+            //   ),
+            // ),
+            AnimatedBuilder(
+              builder: (context, child) {
+                return child!;
+              },
+              animation: animation!,
+              // padding: EdgeInsets.only(top: animation!.value * 200),
+              // duration: const Duration(seconds: 10),
+              child: AnimatedPadding(
+                padding: EdgeInsets.only(
+                  top: animation!.value,
+                ),
+                duration: const Duration(seconds: 6),
+                child: const Text(
+                  'Mandobk',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 40,
+                  ),
                 ),
               ),
             ),
