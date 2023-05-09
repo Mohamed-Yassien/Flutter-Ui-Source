@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_source/easy_localization/test_localization_screen.dart';
 
+import '../main.dart';
+
 class LocalizationScreen extends StatelessWidget {
   const LocalizationScreen({Key? key}) : super(key: key);
 
@@ -22,7 +24,11 @@ class LocalizationScreen extends StatelessWidget {
                     Localizations.localeOf(context).languageCode == 'en'
                         ? 'ar'
                         : 'en';
-                EasyLocalization.of(context)?.setLocale(Locale(newLocale));
+                EasyLocalization.of(context)
+                    ?.setLocale(Locale(newLocale))
+                    .then((value) {
+                  preferences.setString('lang', newLocale);
+                });
               },
               child: const Text('click').tr(),
             ),
