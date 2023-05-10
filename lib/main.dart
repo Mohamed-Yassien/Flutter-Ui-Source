@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_ui_source/app_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'animation/splash_with_scale_animation.dart';
+import 'animation/translate_animation_screen.dart';
 
 late SharedPreferences preferences;
 
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const SplashScreen(),
+      home: const TranslateAnimationScreen(),
     );
   }
 }
