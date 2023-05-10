@@ -44,23 +44,24 @@ final defaultPinTheme = PinTheme(
   height: 56,
   textStyle: const TextStyle(
       fontSize: 16,
-      color: Color.fromRGBO(30, 60, 87, 1),
-      fontWeight: FontWeight.w600),
+      color: Color.fromRGBO(1, 28, 111, 1.0),
+      fontWeight: FontWeight.w600,),
   decoration: BoxDecoration(
-    border: Border.all(color: const Color.fromRGBO(234, 239, 243, 1)),
-    borderRadius: BorderRadius.circular(20),
+    border: Border.all(color: const Color.fromRGBO(168, 113, 136, 1.0,),),
+    borderRadius: BorderRadius.circular(10),
   ),
 );
 
-final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-  border: Border.all(
-    color: const Color.fromRGBO(114, 178, 238, 1),
+final focusedPinTheme = defaultPinTheme.copyWith(
+  decoration: defaultPinTheme.decoration!.copyWith(
+    color: const Color.fromRGBO(194, 8, 99, 1.0),
+    borderRadius: BorderRadius.circular(15),
   ),
-  borderRadius: BorderRadius.circular(15),
 );
 
 final submittedPinTheme = defaultPinTheme.copyWith(
   decoration: defaultPinTheme.decoration!.copyWith(
-    color: const Color.fromRGBO(234, 239, 243, 1),
+    color: const Color.fromRGBO(132, 46, 72, 1.0),
+    borderRadius: BorderRadius.circular(10),
   ),
 );

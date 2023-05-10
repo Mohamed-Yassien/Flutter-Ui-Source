@@ -2,8 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ui_source/app_router.dart';
-import 'package:flutter_ui_source/pinput/pin_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'animation/splash_with_scale_animation.dart';
 
 late SharedPreferences preferences;
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(useMaterial3: true),
       onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const PinScreen(),
+      home: const SplashScreen(),
     );
   }
 }
