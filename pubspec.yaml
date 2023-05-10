@@ -46,6 +46,7 @@ dependencies:
   maps_toolkit: ^2.0.1
   easy_localization: ^3.0.1
   shared_preferences:
+  pinput: ^2.2.31
 
 dev_dependencies:
   flutter_test:
