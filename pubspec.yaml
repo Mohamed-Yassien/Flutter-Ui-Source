@@ -47,6 +47,7 @@ dependencies:
   easy_localization: ^3.0.1
   shared_preferences:
   pinput: ^2.2.31
+  flutter_bloc:
 
 dev_dependencies:
   flutter_test:

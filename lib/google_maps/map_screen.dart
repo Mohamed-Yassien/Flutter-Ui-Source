@@ -122,7 +122,7 @@ class _MapScreenState extends State<MapScreen> {
       Marker(
         markerId: const MarkerId('current m'),
         position:
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+        LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
         icon: currentIcon,
       ),
     );
@@ -172,9 +172,9 @@ class _MapScreenState extends State<MapScreen> {
     //   (value) => currentIcon = value,
     // );
     BitmapDescriptor.fromAssetImage(
-            ImageConfiguration.empty, 'assets/images/loc.png')
+        ImageConfiguration.empty, 'assets/images/loc.png')
         .then(
-      (value) => sourceIcon = value,
+          (value) => sourceIcon = value,
     );
     setState(() {});
   }
@@ -235,96 +235,100 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: currentLocation == null
           ? const Center(
-              child: CircularProgressIndicator.adaptive(),
-            )
+        child: CircularProgressIndicator.adaptive(),
+      )
           : Stack(
-              children: [
-                GoogleMap(
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  onTap: (LatLng tappedLoc) {
-                    markers.removeWhere(
-                        (element) => element.markerId.value == 'source');
+        children: [
+          GoogleMap(
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            onTap: (LatLng tappedLoc) {
+              markers.removeWhere(
+                      (element) => element.markerId.value == 'source');
 
-                    sourceLocation = tappedLoc;
-                    markers.add(
-                      Marker(
-                        markerId: const MarkerId('source'),
-                        position: tappedLoc,
-                        icon: sourceIcon,
-                      ),
-                    );
-                    setUpPolyline();
-                    //  getCircleRadius();
-                    checkIfCircle();
-                    setState(() {});
-                    debugPrint('tab lat is ${tappedLoc.latitude}');
-                    debugPrint('tab long is ${tappedLoc.longitude}');
-                  },
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                      currentLocation!.latitude!,
-                      currentLocation!.longitude!,
-                    ),
-                    zoom: 13.2,
-                  ),
-                  markers: markers,
-                  circles: {
-                    Circle(
-                      circleId: const CircleId('current'),
-                      center: LatLng(
-                        currentLocation!.latitude!,
-                        currentLocation!.longitude!,
-                      ),
-                      radius: circleRadius,
-                      strokeWidth: 1,
-                      fillColor: Colors.red.withOpacity(.4),
-                      strokeColor: Colors.red,
-                    )
-                  },
-                  polylines: polyLine,
-                  // polylines: {
-                  //   Polyline(
-                  //     polylineId: const PolylineId('pol'),
-                  //     points: points,
-                  //     color: Colors.red,
-                  //     width: 5,
-                  //   ),
-                  // },
-                  // polygons: {
-                  //   Polygon(
-                  //     polygonId: const PolygonId('polygon'),
-                  //     points: polygonCords,
-                  //     strokeWidth: 1,
-                  //     strokeColor: Colors.red,
-                  //     fillColor: Colors.red.withOpacity(.3),
-                  //   ),
-                  // },
-                  onMapCreated: (controller) {
-                    mapController.complete(controller);
-                  },
+              sourceLocation = tappedLoc;
+              markers.add(
+                Marker(
+                  markerId: const MarkerId('source'),
+                  position: tappedLoc,
+                  icon: sourceIcon,
                 ),
-                if (!isInCircle)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      color: Colors.red.withOpacity(.7),
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(25),
-                      child: Text(
-                        'No Available Location',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                      ),
-                    ),
-                  ),
-              ],
+              );
+              setUpPolyline();
+              //  getCircleRadius();
+              checkIfCircle();
+              setState(() {});
+              debugPrint('tab lat is ${tappedLoc.latitude}');
+              debugPrint('tab long is ${tappedLoc.longitude}');
+            },
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                currentLocation!.latitude!,
+                currentLocation!.longitude!,
+              ),
+              zoom: 13.2,
             ),
+            markers: markers,
+            circles: {
+              Circle(
+                circleId: const CircleId('current'),
+                center: LatLng(
+                  currentLocation!.latitude!,
+                  currentLocation!.longitude!,
+                ),
+                radius: circleRadius,
+                strokeWidth: 1,
+                fillColor: Colors.red.withOpacity(.4),
+                strokeColor: Colors.red,
+              )
+            },
+            polylines: polyLine,
+            // polylines: {
+            //   Polyline(
+            //     polylineId: const PolylineId('pol'),
+            //     points: points,
+            //     color: Colors.red,
+            //     width: 5,
+            //   ),
+            // },
+            // polygons: {
+            //   Polygon(
+            //     polygonId: const PolygonId('polygon'),
+            //     points: polygonCords,
+            //     strokeWidth: 1,
+            //     strokeColor: Colors.red,
+            //     fillColor: Colors.red.withOpacity(.3),
+            //   ),
+            // },
+            onMapCreated: (controller) {
+              mapController.complete(controller);
+            },
+          ),
+          if (!isInCircle)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.red.withOpacity(.7),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(25),
+                child: Text(
+                  'No Available Location',
+                  style:
+                  Theme
+                      .of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ui_source/app_router.dart';
+import 'package:flutter_ui_source/toggle_theme/app_themes.dart';
+import 'package:flutter_ui_source/toggle_theme/cubit/theme_cubit.dart';
+import 'package:flutter_ui_source/toggle_theme/toggle_theme_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'animation/translate_animation_screen.dart';
 
 late SharedPreferences preferences;
 
@@ -35,14 +38,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
-      onGenerateRoute: AppRouter.onGenerateRoute,
-      home: const TranslateAnimationScreen(),
+    return BlocProvider(
+      create: (context) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, AppTheme>(
+        builder: (context, themeState) {
+          return MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+            themeMode:
+                themeState == AppTheme.light ? ThemeMode.light : ThemeMode.dark,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+            home: const ToggleThemeScreen(),
+          );
+        },
+      ),
     );
   }
 }
